@@ -1,0 +1,2 @@
+C:\work\allocation_android\app\src\main\graphql\com.andrijag.allocation>
+apollo schema:download --endpoint=https://graphql.anilist.co schema.json
