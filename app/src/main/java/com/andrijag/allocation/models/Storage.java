@@ -28,7 +28,7 @@ public class Storage {
 
     static public ApolloClient provideApolloClient() {
         return ApolloClient.builder()
-                .serverUrl("https://graphql.anilist.co")
+                .serverUrl("http://45.32.157.171:9090/graphql")
                 .okHttpClient(new OkHttpClient().newBuilder().build())
                 .build();
     }

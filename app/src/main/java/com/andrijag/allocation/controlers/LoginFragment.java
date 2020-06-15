@@ -14,7 +14,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.andrijag.allocation.MediaQuery;
+import com.andrijag.allocation.LoginMutation;
+//import com.andrijag.allocation.MediaQuery;
 import com.andrijag.allocation.R;
 import com.andrijag.allocation.models.Storage;
 import com.apollographql.apollo.ApolloCall;
@@ -23,6 +24,8 @@ import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
 
 import org.jetbrains.annotations.NotNull;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -88,28 +91,66 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
     private void login(){
 
-        Storage.provideApolloClient().query(
-                MediaQuery.builder()
-                        .id(15125)
-                        .build()
-        ).enqueue(new ApolloCall.Callback<MediaQuery.Data>() {
-            @Override
-            public void onResponse(@NotNull Response<MediaQuery.Data> response) {
-                Log.e("RADOINJA", response.data().Media().title().english());
+        LoginMutation loginMutation = LoginMutation.builder()
+                .email("andrija@test.com")
+                .password("123")
+                .build();
 
-                Intent intent = new Intent(getActivity(), EventsActivity.class);
-                startActivity(intent);
+//        UpvotePostMutation upvotePostMutation = UpvotePostMutation.builder()
+//                .votes(3)
+//                .build();
 
+        Storage.provideApolloClient()
+                .mutate(loginMutation)
+                .enqueue(new ApolloCall.Callback<LoginMutation.Data>() {
+                    @Override
+                    public void onResponse(@NotNull Response<LoginMutation.Data> response) {
+                        assert response.data() != null;
+                        Log.i("MAMAMAMAMAM", response.data().login().token());
+                    }
 
-            }
+                    @Override
+                    public void onFailure(@NotNull ApolloException e) {
+                        Log.e("MAMAMAMAMAM", e.getMessage(), e);
+                    }
+                });
+//                .enqueue(
+//                        new ApolloCall.Callback<LoginMutation.Data>(new ApolloCall.Callback<UpvotePost.Data>() {
+//                            @Override
+//                            public void onResponse(@NotNull Response<UpvotePost.Data> response) {
+//                                Log.i(TAG, response.toString());
+//                            }
+//
+//                            @Override
+//                            public void onFailure(@NotNull ApolloException e) {
+//                                Log.e(TAG, e.getMessage(), e);
+//                            }
+//                        }) {
+//                        };
+//    );
 
-            @Override
-            public void onFailure(@NotNull ApolloException e) {
-                Log.e("ERR RADOINJA", e.toString());
-
-            }
-
-        });
+//        Storage.provideApolloClient().query(
+//                MediaQuery.builder()
+//                        .id(15125)
+//                        .build()
+//        ).enqueue(new ApolloCall.Callback<MediaQuery.Data>() {
+//            @Override
+//            public void onResponse(@NotNull Response<MediaQuery.Data> response) {
+//                Log.e("RADOINJA", response.data().Media().title().english());
+//
+//                Intent intent = new Intent(getActivity(), EventsActivity.class);
+//                startActivity(intent);
+//
+//
+//            }
+//
+//            @Override
+//            public void onFailure(@NotNull ApolloException e) {
+//                Log.e("ERR RADOINJA", e.toString());
+//
+//            }
+//
+//        });
     }
 
     @Override

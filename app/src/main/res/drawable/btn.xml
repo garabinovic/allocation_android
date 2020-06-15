@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <item>
+        <shape android:shape="oval">
+            <gradient
+                android:type="linear"
+                android:angle="225"
+                android:startColor="#FF5B7F"
+                android:endColor="#FC9970" />
+        </shape>
+
+    </item>
+    <item
+        android:left="10dp"
+        android:right="10dp"
+        android:top="10dp"
+        android:bottom="10dp"
+        android:drawable="@drawable/qrcode_scan"
+        />
+
+</layer-list>
+

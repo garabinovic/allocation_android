@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -377,7 +378,16 @@ public class EventsActivity extends AppCompatActivity implements EventsFragment.
 
     @Override
     public void onListFragmentInteraction(DummyContent.DummyItem item) {
-        Intent intent = new Intent(EventsActivity.this, QcScannerActivity.class);
-        startActivity(intent);
+//        Intent intent = new Intent(EventsActivity.this, QcScannerActivity.class);
+//        startActivity(intent);
+//
+
+        Fragment qcr = new QcReaderFragment();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        fragmentTransaction.replace(R.id.events_fragment_container, qcr);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 }
