@@ -5,6 +5,33 @@ public class MyEvent {
     private String mTitle;
     private String mDescription;
     private String mLocation;
+    private String mFrom;
+    private String mTo;
+    private String mClientName;
+
+    public String getFrom() {
+        return mFrom;
+    }
+
+    public void setFrom(String mFrom) {
+        this.mFrom = mFrom;
+    }
+
+    public String getTo() {
+        return mTo;
+    }
+
+    public void setTo(String mTo) {
+        this.mTo = mTo;
+    }
+
+    public String getClientName() {
+        return mClientName;
+    }
+
+    public void setClientName(String mClientName) {
+        this.mClientName = mClientName;
+    }
 
     public String getmId() {
         return mId;

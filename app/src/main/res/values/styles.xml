@@ -14,6 +14,12 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:textColorSecondary">@android:color/white</item>
+
+        <item name="android:statusBarColor">@android:color/transparent</item>
+
+        <item name="colorControlNormal">@color/veryLightGrey</item>
+        <item name="colorControlActivated">@color/colorAccent</item>
+        <item name="colorControlHighlight">@color/colorAccent</item>
     </style>
 
 </resources>

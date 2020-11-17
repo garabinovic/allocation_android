@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#6200EE</color>
-    <color name="colorPrimaryDark">#3700B3</color>
-    <color name="colorAccent">#03DAC5</color>
+    <color name="colorPrimary">#FFFFFF</color>
+    <color name="colorPrimaryDark">#43425D</color>
+    <color name="colorAccent">#FE6F7A</color>
+    <color name="veryLightGrey">#E9E9F0</color>
+    <color name="orange">#FE6F7A</color>
+    <color name="white">#FFFFFF</color>
+    <color name="event_border">#E0E4EC</color>
+    <color name="event_label">#FD7E77</color>
+    <color name="event_text">#8890A6</color>
+
+
+
 </resources>

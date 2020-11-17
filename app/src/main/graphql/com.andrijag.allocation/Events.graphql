@@ -1,0 +1,9 @@
+query Events{
+    events {
+        from,
+        to,
+        title,
+        location,
+        clientName
+    }
+}

@@ -1,17 +1,30 @@
 package com.andrijag.allocation.models;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.util.Log;
 
+import com.andrijag.allocation.R;
 import com.apollographql.apollo.ApolloClient;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class Storage {
+    public void setMyEvents(List<MyEvent> mMyEvents) {
+        this.mMyEvents = mMyEvents;
+    }
 
     private List<MyEvent> mMyEvents;
+    public String token = "";
     private static Storage sStorage;
     public static Storage get(Context context) {
         if (sStorage == null) {
@@ -26,10 +39,31 @@ public class Storage {
         return mMyEvents;
     }
 
-    static public ApolloClient provideApolloClient() {
+    static public ApolloClient provideApolloClient(final Context context) {
+
+        final SharedPreferences pref = context.getSharedPreferences("Allocation", 0); // 0 - for private mode
         return ApolloClient.builder()
                 .serverUrl("http://45.32.157.171:9090/graphql")
-                .okHttpClient(new OkHttpClient().newBuilder().build())
+                .okHttpClient(new OkHttpClient().newBuilder()
+                        .addInterceptor(
+                                new Interceptor() {
+                                    @NotNull
+                                    @Override
+                                    public Response intercept(@NotNull Interceptor.Chain chain) throws IOException {
+                                        Request original = chain.request();
+
+                                        Request request = original.newBuilder()
+                                                .header("Authorization", pref.getString("token",""))
+                                                .method(original.method(), original.body())
+                                                .build();
+
+                                        return chain.proceed(request);
+                                    }
+                                })
+                        .build())
                 .build();
     }
+
+
 }
+

@@ -15,6 +15,8 @@ import android.view.ViewGroup;
 import com.andrijag.allocation.R;
 import com.andrijag.allocation.controlers.dummy.DummyContent;
 import com.andrijag.allocation.controlers.dummy.DummyContent.DummyItem;
+import com.andrijag.allocation.models.MyEvent;
+import com.andrijag.allocation.models.Storage;
 
 import java.util.List;
 
@@ -64,16 +66,18 @@ public class EventsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_events_list, container, false);
 
         // Set the adapter
-        if (view instanceof RecyclerView) {
+
+        RecyclerView recyclerView = view.findViewById(R.id.list);
+//        if (view instanceof RecyclerView) {
             Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
+//            RecyclerView recyclerView = (RecyclerView) view;
             if (mColumnCount <= 1) {
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MyEventRecyclerViewAdapter(DummyContent.ITEMS, mListener));
-        }
+            recyclerView.setAdapter(new MyEventRecyclerViewAdapter(Storage.get(getActivity()).getMyEvents(), mListener));
+//        }
         return view;
     }
 
@@ -107,6 +111,6 @@ public class EventsFragment extends Fragment {
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(DummyItem item);
+        void onListFragmentInteraction(MyEvent item);
     }
 }

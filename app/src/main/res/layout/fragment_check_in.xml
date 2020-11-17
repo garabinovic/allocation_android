@@ -5,18 +5,23 @@
     android:layout_height="match_parent"
     tools:context=".controlers.CheckInFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Check In Fragment" />
+        tools:ignore="UselessParent">
 
-    <Button
-        android:id="@+id/buttonLogin"
-        android:layout_width="150dp"
-        android:layout_height="60dp"
-        android:layout_gravity="center"
-        android:text="go to Log In" />
+        <ProgressBar
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_centerInParent="true"
+            />
 
+<!--        <Button-->
+<!--            android:id="@+id/buttonLogin"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            >onLogin</Button>-->
+
+    </RelativeLayout>
 
 </FrameLayout>

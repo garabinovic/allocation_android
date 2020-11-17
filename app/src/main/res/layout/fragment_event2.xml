@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="130dp"
+    android:orientation="vertical"
+    android:padding="15dp"
+    android:background="@drawable/event_item"
+
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        >
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            tools:ignore="NestedWeights">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="18sp"
+                android:text="@string/time"
+                android:fontFamily="@font/poppins_medium"
+                android:letterSpacing="0.27"
+                android:maxLines="1"
+                android:textColor="@color/event_label"
+                android:textSize="12sp"
+                />
+
+            <TextView
+                android:text="@string/time"
+                android:id="@+id/event_time"
+                android:layout_width="match_parent"
+                android:layout_height="18sp"
+                android:layout_marginTop="8dp"
+                android:fontFamily="@font/poppins_regular"
+                android:letterSpacing="0.4"
+                android:maxLines="1"
+                android:textColor="@color/event_text"
+                android:textSize="12sp"
+
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="18sp"
+                android:text="@string/event_title"
+                android:fontFamily="@font/poppins_medium"
+                android:letterSpacing="0.27"
+                android:maxLines="1"
+                android:textColor="@color/event_label"
+                android:textSize="12sp"
+                />
+
+            <TextView
+                android:text="@string/event_title"
+                android:id="@+id/event_title"
+                android:layout_width="wrap_content"
+                android:layout_height="18sp"
+                android:layout_marginTop="8dp"
+                android:fontFamily="@font/poppins_regular"
+                android:letterSpacing="0.4"
+                android:maxLines="1"
+                android:textColor="@color/event_text"
+                android:textSize="12sp"
+
+                />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            tools:ignore="NestedWeights">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="18sp"
+                android:text="@string/client_name"
+                android:fontFamily="@font/poppins_medium"
+                android:letterSpacing="0.27"
+                android:maxLines="1"
+                android:textColor="@color/event_label"
+                android:textSize="12sp"
+                />
+
+            <TextView
+                android:text="@string/client_name"
+                android:id="@+id/event_client_name"
+                android:layout_width="wrap_content"
+                android:layout_height="18sp"
+                android:layout_marginTop="8dp"
+                android:fontFamily="@font/poppins_regular"
+                android:letterSpacing="0.4"
+                android:maxLines="1"
+                android:textColor="@color/event_text"
+                android:textSize="12sp"
+
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="18sp"
+                android:text="@string/location"
+                android:fontFamily="@font/poppins_medium"
+                android:letterSpacing="0.27"
+                android:maxLines="1"
+                android:textColor="@color/event_label"
+                android:textSize="12sp"
+                />
+
+            <TextView
+                android:text="@string/location"
+                android:id="@+id/event_location"
+                android:layout_width="wrap_content"
+                android:layout_height="18sp"
+                android:layout_marginTop="8dp"
+                android:fontFamily="@font/poppins_regular"
+                android:letterSpacing="0.4"
+                android:maxLines="1"
+                android:textColor="@color/event_text"
+                android:textSize="12sp"
+                />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+
+</LinearLayout>
+

@@ -1,7 +1,9 @@
 package com.andrijag.allocation.controlers;
 
+import android.annotation.SuppressLint;
 import android.app.ListActivity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -11,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -25,6 +28,8 @@ import com.apollographql.apollo.exception.ApolloException;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
+
 import static android.content.ContentValues.TAG;
 
 /**
@@ -35,18 +40,19 @@ import static android.content.ContentValues.TAG;
 public class LoginFragment extends Fragment implements View.OnClickListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String USER_NAME = "usr_name";
+    private static final String PASSWORD = "password";
+    private static final String IS_CHECKED = "is_checked";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private String mUsername, mPassword;
+    private Boolean mIsRememberMe = false;
+    private EditText mEditUsername, mEditPassword;
+    private CheckBox mCheckRememberMe;
+//    private SharedPreferences sharedPreferences;
+//    private SharedPreferences pref;
 
-    private EditText mUsername, mPassword;
-
-    public LoginFragment() {
-        // Required empty public constructor
-    }
+    public LoginFragment() {}
 
     /**
      * Use this factory method to create a new instance of
@@ -57,11 +63,12 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
      * @return A new instance of fragment LoginFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static LoginFragment newInstance(String param1, String param2) {
+    public static LoginFragment newInstance(String param1, String param2, Boolean param3) {
         LoginFragment fragment = new LoginFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putString(USER_NAME, param1);
+        args.putString(PASSWORD, param2);
+        args.putBoolean(IS_CHECKED, param3);
         fragment.setArguments(args);
         return fragment;
     }
@@ -70,9 +77,12 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            mUsername = getArguments().getString(USER_NAME);
+            mPassword = getArguments().getString(PASSWORD);
+            mIsRememberMe = getArguments().getBoolean(IS_CHECKED);
         }
+//        sharedPreferences = Objects.requireNonNull(getActivity()).getSharedPreferences("Allocation",0);
+
     }
 
     @Override
@@ -81,32 +91,60 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_login, container, false);
 
-        this.mUsername = view.findViewById(R.id.username);
-        this.mPassword = view.findViewById(R.id.password);
+        this.mEditUsername = view.findViewById(R.id.username);
+        this.mEditPassword = view.findViewById(R.id.password);
+        if(this.mUsername!=null){
+            this.mEditUsername.setText(mUsername);
+        }
+        if(this.mPassword!=null){
+            this.mEditPassword.setText(mPassword);
+        }
+        this.mCheckRememberMe = view.findViewById(R.id.rememberMeCheck);
+        if(this.mIsRememberMe){
+            this.mCheckRememberMe.setChecked(this.mIsRememberMe);
+        }
+
         Button mLoginBtn = view.findViewById(R.id.loginBtn);
         mLoginBtn.setOnClickListener(this);
+
+//        pref = Objects.requireNonNull(getActivity()).getSharedPreferences("Allocation", 0); // 0 - for private mode
+
 
         return view;
     }
 
     private void login(){
 
+        this.mUsername = this.mEditUsername.getText().toString();
+        this.mPassword = this.mEditPassword.getText().toString();
+        this.mIsRememberMe = this.mCheckRememberMe.isChecked();
+        if(this.mUsername.equals("") || this.mPassword.equals("")){
+            Toast.makeText(getActivity(), "Please, Enter Username and Password", Toast.LENGTH_SHORT).show();
+        }
+
         LoginMutation loginMutation = LoginMutation.builder()
-                .email("andrija@test.com")
-                .password("123")
+                .email(this.mEditUsername.getText().toString())
+                .password(this.mEditPassword.getText().toString())
                 .build();
 
-//        UpvotePostMutation upvotePostMutation = UpvotePostMutation.builder()
-//                .votes(3)
-//                .build();
-
-        Storage.provideApolloClient()
+        Storage.provideApolloClient(Objects.requireNonNull(getActivity()))
                 .mutate(loginMutation)
                 .enqueue(new ApolloCall.Callback<LoginMutation.Data>() {
                     @Override
                     public void onResponse(@NotNull Response<LoginMutation.Data> response) {
                         assert response.data() != null;
                         Log.i("MAMAMAMAMAM", response.data().login().token());
+
+                        SharedPreferences pref = Objects.requireNonNull(getActivity()).getSharedPreferences("Allocation",0);
+                        @SuppressLint("CommitPrefEdits") SharedPreferences.Editor editor = pref.edit();
+                        editor.putString("token", "Bearer " + response.data().login().token());
+                        editor.putString("username", mUsername);
+                        editor.putString("password", mPassword);
+                        editor.putBoolean("isRememberMe", mIsRememberMe);
+                        editor.apply();
+
+                        Intent intent = new Intent(getActivity(), EventsActivity.class);
+                        startActivity(intent);
                     }
 
                     @Override

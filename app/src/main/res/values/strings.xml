@@ -3,4 +3,20 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="login_welcome">Welcome Back, Please login to your account.</string>
+    <string name="user_name">User name</string>
+    <string name="password">Password</string>
+    <string name="remember_me">Remember me</string>
+    <string name="forgot_password">Forgot pasword</string>
+    <string name="login">Login</string>
+    <string name="sign_up">Sign up</string>
+    <string name="term_of_use">Term of use. Privacy policy</string>
+    <string name="time">Time</string>
+    <string name="event_title">Event Title</string>
+    <string name="client_name">Client name</string>
+    <string name="location">Location</string>
+    <string name="event_list">Event list</string>
+
+
+
 </resources>

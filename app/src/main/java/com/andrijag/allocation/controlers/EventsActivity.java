@@ -12,6 +12,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.Uri;
@@ -20,11 +21,20 @@ import android.os.Looper;
 import android.os.PersistableBundle;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.andrijag.allocation.BuildConfig;
+import com.andrijag.allocation.EventsQuery;
+import com.andrijag.allocation.LoginMutation;
 import com.andrijag.allocation.R;
 import com.andrijag.allocation.controlers.dummy.DummyContent;
+import com.andrijag.allocation.models.MyEvent;
+import com.andrijag.allocation.models.Storage;
+import com.apollographql.apollo.ApolloCall;
+import com.apollographql.apollo.api.Response;
+import com.apollographql.apollo.exception.ApolloException;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -40,6 +50,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
@@ -48,9 +59,19 @@ import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+
+import static java.sql.Types.TIMESTAMP;
 
 public class EventsActivity extends AppCompatActivity implements EventsFragment.OnListFragmentInteractionListener
 {
@@ -88,21 +109,89 @@ public class EventsActivity extends AppCompatActivity implements EventsFragment.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_events);
 
-        FragmentManager fm = getSupportFragmentManager();
-        Fragment fragment = fm.findFragmentById(R.id.events_fragment_container);
+        final FloatingActionButton button =  findViewById(R.id.fab);
+        button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                openScanner();
+//                Toast.makeText(getApplicationContext(), "openScanner", Toast.LENGTH_SHORT).show();
+            }
+        });
 
-        if (fragment == null) {
-            fragment = new EventsFragment();
-            fm.beginTransaction()
-                    .add(R.id.events_fragment_container, fragment)
-                    .commit();
-        }
+        //todo ovde ce se umesto evenst fragmenta prvo pozvati fragment sa loaderom
+        // nakon cega ce se izvrsiti poziv za listu evenata
+        // ako se lista dobije preusmerava se fragment evenaya i ucitava
+
+
+        // funkcija koja salje API pzoziv za listu events
+        getEvents();
+
 
         // initialize the necessary libraries
         init();
 
         // restore the values from saved instance state
         restoreValuesFromBundle(savedInstanceState);
+    }
+
+    private void getEvents(){
+        EventsQuery eventsQuery = EventsQuery.builder().build();
+        Storage.provideApolloClient(this)
+                .query(eventsQuery)
+                .enqueue(new ApolloCall.Callback<EventsQuery.Data>() {
+                    @Override
+                    public void onResponse(@NotNull Response<EventsQuery.Data> response) {
+                        assert response.data() != null;
+                        Log.i("MY EVENTS", response.data().events().toString());
+                        List<MyEvent> events = new ArrayList<MyEvent>(); ;
+                        for (int i = 0; i < response.data().events().size(); i++) {
+                            MyEvent event = new MyEvent();
+                            @SuppressLint("SimpleDateFormat")
+                            SimpleDateFormat readingFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                            @SuppressLint("SimpleDateFormat")
+                            SimpleDateFormat outputFormat = new SimpleDateFormat("HH:mm");
+                            try {
+                                Date dateTo = readingFormat.parse(response.data().events().get(i).to());
+                                assert dateTo != null;
+                                event.setTo(outputFormat.format(dateTo));
+
+                                Date dateFrom = readingFormat.parse(response.data().events().get(i).from());
+                                assert dateFrom != null;
+                                event.setFrom(outputFormat.format(dateFrom));
+
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+//                            event.setTo(dateString);
+//                            Log.i("AAA", formatter.toString());
+//                            event.setTo(response.data().events().get(i).to());
+//                            event.setFrom(response.data().events().get(i).from());
+                            event.setTitle(response.data().events().get(i).title());
+                            event.setLocation(response.data().events().get(i).location());
+                            event.setClientName(response.data().events().get(i).clientName());
+                            Log.i("MY ZZZZ", String.valueOf(response.data().events().get(i)));
+                            events.add(event);
+                        }
+                        Storage.get(getApplicationContext()).setMyEvents(events);
+//                        Log.i("EVO IHHHHHHH", events.toString());
+
+                        FragmentManager fm = getSupportFragmentManager();
+                        Fragment fragment = fm.findFragmentById(R.id.events_fragment_container);
+
+                        if (fragment == null) {
+                            fragment = new EventsFragment();
+                            fm.beginTransaction()
+                                    .add(R.id.events_fragment_container, fragment)
+                                    .commit();
+                        }
+
+                    }
+
+                    @Override
+                    public void onFailure(@NotNull ApolloException e) {
+                        Log.e("ERROR TRALALALA", e.toString());
+                    }
+                });
+
     }
 
     private void init() {
@@ -376,12 +465,34 @@ public class EventsActivity extends AppCompatActivity implements EventsFragment.
 
 
 
-    @Override
-    public void onListFragmentInteraction(DummyContent.DummyItem item) {
-//        Intent intent = new Intent(EventsActivity.this, QcScannerActivity.class);
-//        startActivity(intent);
+//    @Override
+//    public void onListFragmentInteraction(DummyContent.DummyItem item) {
+////        Intent intent = new Intent(EventsActivity.this, QcScannerActivity.class);
+////        startActivity(intent);
+////
 //
+//        Fragment qcr = new QcReaderFragment();
+//        FragmentManager fragmentManager = getSupportFragmentManager();
+//        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//
+//        fragmentTransaction.replace(R.id.events_fragment_container, qcr);
+//        fragmentTransaction.addToBackStack(null);
+//        fragmentTransaction.commit();
+//    }
 
+//    @Override
+//    public void onListFragmentInteraction(DummyContent.EventItem item) {
+//
+////        Fragment qcr = new QcReaderFragment();
+////        FragmentManager fragmentManager = getSupportFragmentManager();
+////        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+////
+////        fragmentTransaction.replace(R.id.events_fragment_container, qcr);
+////        fragmentTransaction.addToBackStack(null);
+////        fragmentTransaction.commit();
+//    }
+
+    public void openScanner(){
         Fragment qcr = new QcReaderFragment();
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -389,5 +500,10 @@ public class EventsActivity extends AppCompatActivity implements EventsFragment.
         fragmentTransaction.replace(R.id.events_fragment_container, qcr);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
+    }
+
+    @Override
+    public void onListFragmentInteraction(MyEvent item) {
+        Toast.makeText(this, "ovde ici na detalje", Toast.LENGTH_SHORT).show();
     }
 }

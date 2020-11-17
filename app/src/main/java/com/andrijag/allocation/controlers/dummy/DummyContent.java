@@ -17,6 +17,7 @@ public class DummyContent {
      * An array of sample (dummy) items.
      */
     public static final List<DummyItem> ITEMS = new ArrayList<DummyItem>();
+    public static final List<EventItem> EVENTS = new ArrayList<EventItem>();
 
     /**
      * A map of sample (dummy) items, by ID.
@@ -30,6 +31,9 @@ public class DummyContent {
         for (int i = 1; i <= COUNT; i++) {
             addItem(createDummyItem(i));
         }
+        EVENTS.add(new EventItem("01", "10:30 - 15:00", "Group ACB", "Cleaning 1", "Loc 1"));
+        EVENTS.add(new EventItem("02", "15:00 - 17:30", "Group DEF", "Cleaning 2", "Beograd"));
+        EVENTS.add(new EventItem("03", "17:30 - 19:00", "Group GJK", "Cleaning 3", "Mirijevo"));
     }
 
     private static void addItem(DummyItem item) {
@@ -67,6 +71,27 @@ public class DummyContent {
         @Override
         public String toString() {
             return content;
+        }
+    }
+
+    public static class EventItem {
+        public final String id;
+        public final String time;
+        public final String clientName;
+        public final String eventTitle;
+        public final String location;
+
+        public EventItem(String id, String time, String clientNamem, String eventTitle, String location) {
+            this.id = id;
+            this.time = time;
+            this.clientName = clientNamem;
+            this.eventTitle = eventTitle;
+            this.location = location;
+        }
+
+        @Override
+        public String toString() {
+            return eventTitle;
         }
     }
 }
