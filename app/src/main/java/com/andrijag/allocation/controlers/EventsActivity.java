@@ -50,6 +50,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
@@ -104,23 +105,33 @@ public class EventsActivity extends AppCompatActivity implements EventsFragment.
     // boolean flag to toggle the ui
     private Boolean mRequestingLocationUpdates;
 
+    public FloatingActionButton scanFab;
+    public Boolean isScanFab = true;
+    public BottomAppBar bottomAppBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_events);
 
-        final FloatingActionButton button =  findViewById(R.id.fab);
-        button.setOnClickListener(new View.OnClickListener() {
+        scanFab =  findViewById(R.id.scanFab);
+        scanFab.setImageResource(R.drawable.btn);
+
+        scanFab.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                openScanner();
+                if(isScanFab){
+                    openScanner();
+                } else {
+                    getSupportFragmentManager().popBackStackImmediate();
+                    Toast.makeText(getApplicationContext(), "close", Toast.LENGTH_SHORT).show();
+
+                }
+
 //                Toast.makeText(getApplicationContext(), "openScanner", Toast.LENGTH_SHORT).show();
             }
         });
 
-        //todo ovde ce se umesto evenst fragmenta prvo pozvati fragment sa loaderom
-        // nakon cega ce se izvrsiti poziv za listu evenata
-        // ako se lista dobije preusmerava se fragment evenaya i ucitava
-
+        bottomAppBar =  findViewById(R.id.bar);
 
         // funkcija koja salje API pzoziv za listu events
         getEvents();
@@ -145,26 +156,9 @@ public class EventsActivity extends AppCompatActivity implements EventsFragment.
                         List<MyEvent> events = new ArrayList<MyEvent>(); ;
                         for (int i = 0; i < response.data().events().size(); i++) {
                             MyEvent event = new MyEvent();
-                            @SuppressLint("SimpleDateFormat")
-                            SimpleDateFormat readingFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                            @SuppressLint("SimpleDateFormat")
-                            SimpleDateFormat outputFormat = new SimpleDateFormat("HH:mm");
-                            try {
-                                Date dateTo = readingFormat.parse(response.data().events().get(i).to());
-                                assert dateTo != null;
-                                event.setTo(outputFormat.format(dateTo));
 
-                                Date dateFrom = readingFormat.parse(response.data().events().get(i).from());
-                                assert dateFrom != null;
-                                event.setFrom(outputFormat.format(dateFrom));
-
-                            } catch (ParseException e) {
-                                e.printStackTrace();
-                            }
-//                            event.setTo(dateString);
-//                            Log.i("AAA", formatter.toString());
-//                            event.setTo(response.data().events().get(i).to());
-//                            event.setFrom(response.data().events().get(i).from());
+                            event.setFrom(Storage.convertDateTimeFormat("yyyy-MM-dd HH:mm:ss", "HH:mm", response.data().events().get(i).from()));
+                            event.setTo(Storage.convertDateTimeFormat("yyyy-MM-dd HH:mm:ss", "HH:mm", response.data().events().get(i).to()));
                             event.setTitle(response.data().events().get(i).title());
                             event.setLocation(response.data().events().get(i).location());
                             event.setClientName(response.data().events().get(i).clientName());
@@ -496,10 +490,10 @@ public class EventsActivity extends AppCompatActivity implements EventsFragment.
         Fragment qcr = new QcReaderFragment();
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
         fragmentTransaction.replace(R.id.events_fragment_container, qcr);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
+
     }
 
     @Override

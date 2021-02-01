@@ -20,12 +20,6 @@ import com.andrijag.allocation.models.Storage;
 
 import java.util.List;
 
-/**
- * A fragment representing a list of Items.
- * <p/>
- * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
- * interface.
- */
 public class EventsFragment extends Fragment {
 
     // TODO: Customize parameter argument names
@@ -34,15 +28,8 @@ public class EventsFragment extends Fragment {
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
 
-    /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
-     */
-    public EventsFragment() {
-    }
+    public EventsFragment() {}
 
-    // TODO: Customize parameter initialization
-    @SuppressWarnings("unused")
     public static EventsFragment newInstance(int columnCount) {
         EventsFragment fragment = new EventsFragment();
         Bundle args = new Bundle();
@@ -63,6 +50,10 @@ public class EventsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        if(container!=null){
+            container.removeAllViews(); // Inflate the layout for this fragment
+        }
+
         View view = inflater.inflate(R.layout.fragment_events_list, container, false);
 
         // Set the adapter

@@ -58,7 +58,7 @@ public class CheckInFragment extends Fragment implements View.OnClickListener {
                     @Override
                     public void onResponse(@NotNull Response<CheckMutation.Data> response) {
 
-                        assert response.data() != null;
+//                        assert response.data() != null;
                         Log.i("CHECK", String.valueOf(response.data()));
 
                         SharedPreferences pref = Objects.requireNonNull(getActivity()).getSharedPreferences("Allocation",0);

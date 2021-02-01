@@ -1,0 +1,5 @@
+mutation EventStart($id: String!){
+  eventStart(id:$id){
+    id
+  }
+}

@@ -1,0 +1,16 @@
+query EventByLocationId($locationId: String!){
+    eventByLocationId(id: $locationId){
+        id,
+        title,
+        description,
+        location,
+        clientName,
+        from,
+        to,
+        canStart,
+        canStop
+    }
+}
+
+
+

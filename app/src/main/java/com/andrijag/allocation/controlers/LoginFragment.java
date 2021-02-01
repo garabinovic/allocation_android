@@ -7,6 +7,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -32,37 +34,19 @@ import java.util.Objects;
 
 import static android.content.ContentValues.TAG;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link LoginFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class LoginFragment extends Fragment implements View.OnClickListener {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+
     private static final String USER_NAME = "usr_name";
     private static final String PASSWORD = "password";
     private static final String IS_CHECKED = "is_checked";
 
-    // TODO: Rename and change types of parameters
     private String mUsername, mPassword;
     private Boolean mIsRememberMe = false;
     private EditText mEditUsername, mEditPassword;
     private CheckBox mCheckRememberMe;
-//    private SharedPreferences sharedPreferences;
-//    private SharedPreferences pref;
 
     public LoginFragment() {}
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment LoginFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static LoginFragment newInstance(String param1, String param2, Boolean param3) {
         LoginFragment fragment = new LoginFragment();
         Bundle args = new Bundle();
@@ -88,7 +72,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_login, container, false);
 
         this.mEditUsername = view.findViewById(R.id.username);
@@ -132,19 +115,27 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 .enqueue(new ApolloCall.Callback<LoginMutation.Data>() {
                     @Override
                     public void onResponse(@NotNull Response<LoginMutation.Data> response) {
-                        assert response.data() != null;
-                        Log.i("MAMAMAMAMAM", response.data().login().token());
+//                        assert response.data() != null;
 
-                        SharedPreferences pref = Objects.requireNonNull(getActivity()).getSharedPreferences("Allocation",0);
-                        @SuppressLint("CommitPrefEdits") SharedPreferences.Editor editor = pref.edit();
-                        editor.putString("token", "Bearer " + response.data().login().token());
-                        editor.putString("username", mUsername);
-                        editor.putString("password", mPassword);
-                        editor.putBoolean("isRememberMe", mIsRememberMe);
-                        editor.apply();
+                        if(response.hasErrors()){
+                            Log.i("LOCATON  ERROR", response.errors().get(0).message());
+                            goToErrorFragment(response.errors().get(0).message());
+                        } else {
+                            Log.i("MAMAMAMAMAM", response.data().login().token());
 
-                        Intent intent = new Intent(getActivity(), EventsActivity.class);
-                        startActivity(intent);
+                            SharedPreferences pref = Objects.requireNonNull(getActivity()).getSharedPreferences("Allocation",0);
+                            @SuppressLint("CommitPrefEdits") SharedPreferences.Editor editor = pref.edit();
+                            editor.putString("token", "Bearer " + response.data().login().token());
+                            editor.putString("username", mUsername);
+                            editor.putString("password", mPassword);
+                            editor.putBoolean("isRememberMe", mIsRememberMe);
+                            editor.apply();
+
+                            Intent intent = new Intent(getActivity(), EventsActivity.class);
+                            startActivity(intent);
+                        }
+
+
                     }
 
                     @Override
@@ -200,5 +191,14 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 //                Toast.makeText(getActivity(), "LOGIN, " + this.mUsername.getText(), Toast.LENGTH_SHORT).show();
                 break;
         }
+    }
+
+    public void goToErrorFragment(String message) {
+        Fragment errorFragment = ErrorFragment.newInstance(message);
+        FragmentManager fragmentManager = getParentFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.fragment_container, errorFragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 }

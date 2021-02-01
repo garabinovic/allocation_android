@@ -4,45 +4,38 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import com.andrijag.allocation.EventQuery;
+import com.andrijag.allocation.EventStopMutation;
 import com.andrijag.allocation.R;
+import com.andrijag.allocation.models.Storage;
+import com.apollographql.apollo.ApolloCall;
+import com.apollographql.apollo.api.Response;
+import com.apollographql.apollo.exception.ApolloException;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link EventDetailsFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
+
 public class EventDetailsFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private static final String EVENT_ID = "eventId";
+    private String eventId;
+    private TextView idText;
+    View view;
 
-    public EventDetailsFragment() {
-        // Required empty public constructor
-    }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment EventDetails.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static EventDetailsFragment newInstance(String param1, String param2) {
+    public EventDetailsFragment() {}
+
+    public static EventDetailsFragment newInstance(String eventId) {
         EventDetailsFragment fragment = new EventDetailsFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putString(EVENT_ID, eventId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -51,15 +44,45 @@ public class EventDetailsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            eventId = getArguments().getString(EVENT_ID);
+            getDetails();
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.fragment_event_details, container, false);
+
+        idText = view.findViewById(R.id.idText);
+        idText.setText(eventId);
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_event_details, container, false);
+        return view;
+    }
+
+    public void getDetails() {
+        EventQuery eventQuery = EventQuery.builder()
+                .id(eventId)
+                .build();
+
+        Storage.provideApolloClient(Objects.requireNonNull(getActivity()))
+                .query(eventQuery)
+                .enqueue(new ApolloCall.Callback<EventQuery.Data>() {
+                    @Override
+                    public void onResponse(@NotNull Response<EventQuery.Data> response) {
+                        if(response.hasErrors()){
+                            Log.i("EventStart ERROR", response.errors().get(0).message());
+//                            goToErrorFragment(response.errors().get(0).message());
+                        } else {
+                            Log.i("EventStart", response.data().event().id());
+//                            goToEventDetailsFragment(response.data().eventStop().id());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(@NotNull ApolloException e) {
+                        Log.i("onFailure EventStop", "XXXXXX");
+                    }
+                });
     }
 }

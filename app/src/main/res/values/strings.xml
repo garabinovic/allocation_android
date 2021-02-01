@@ -16,7 +16,8 @@
     <string name="client_name">Client name</string>
     <string name="location">Location</string>
     <string name="event_list">Event list</string>
-
+    <string name="start">Start</string>
+    <string name="stop">Stop</string>
 
 
 </resources>

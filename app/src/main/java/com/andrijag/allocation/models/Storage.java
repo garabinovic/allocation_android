@@ -1,5 +1,6 @@
 package com.andrijag.allocation.models;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
@@ -10,7 +11,10 @@ import com.apollographql.apollo.ApolloClient;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import okhttp3.Interceptor;
@@ -62,6 +66,23 @@ public class Storage {
                                 })
                         .build())
                 .build();
+    }
+
+
+
+    static public String convertDateTimeFormat(String inputPattern, String outputPattern, String dateTimeStamp){
+        @SuppressLint("SimpleDateFormat")
+        SimpleDateFormat inputFormat = new SimpleDateFormat(inputPattern);
+        @SuppressLint("SimpleDateFormat")
+        SimpleDateFormat outputFormat = new SimpleDateFormat(outputPattern);
+        try {
+            Date date = inputFormat.parse(dateTimeStamp);
+            assert date != null;
+            return outputFormat.format(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
 

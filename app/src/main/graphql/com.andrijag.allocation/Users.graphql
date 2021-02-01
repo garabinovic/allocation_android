@@ -3,7 +3,7 @@ query Users{
         firstName,
         id,
         email,
-        password
+        lastName
     }
 }
 

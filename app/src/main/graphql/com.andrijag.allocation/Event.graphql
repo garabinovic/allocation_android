@@ -1,0 +1,13 @@
+query Event($id: String!) {
+    event (id: $id) {
+        id,
+        title,
+        description,
+        location,
+        clientName,
+        from,
+        to,
+        canStart,
+        canStop
+    }
+}
