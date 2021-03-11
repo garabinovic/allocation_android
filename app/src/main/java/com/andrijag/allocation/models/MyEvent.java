@@ -1,71 +1,89 @@
 package com.andrijag.allocation.models;
 
 public class MyEvent {
-    private String mId;
-    private String mTitle;
-    private String mDescription;
-    private String mLocation;
-    private String mFrom;
-    private String mTo;
-    private String mClientName;
+  private String mId;
+  private String mTitle;
+  private String mDescription;
+  private String mLocation;
+  private String mStart;
+  private String mEnd;
+  private String mClientName;
+  private Boolean mCanStart;
+  private Boolean mCanStop;
 
-    public String getFrom() {
-        return mFrom;
-    }
+  public Boolean getCanStart() {
+    return mCanStart;
+  }
 
-    public void setFrom(String mFrom) {
-        this.mFrom = mFrom;
-    }
+  public void setCanStart(Boolean mCanStart) {
+    this.mCanStart = mCanStart;
+  }
 
-    public String getTo() {
-        return mTo;
-    }
+  public Boolean getCanStop() {
+    return mCanStop;
+  }
 
-    public void setTo(String mTo) {
-        this.mTo = mTo;
-    }
+  public void setCanStop(Boolean mCanStop) {
+    this.mCanStop = mCanStop;
+  }
 
-    public String getClientName() {
-        return mClientName;
-    }
+  public String getStart() {
+    return mStart;
+  }
 
-    public void setClientName(String mClientName) {
-        this.mClientName = mClientName;
-    }
+  public void setStart(String mStart) {
+    this.mStart = mStart;
+  }
 
-    public String getmId() {
-        return mId;
-    }
+  public String getEnd() {
+    return mEnd;
+  }
 
-    public void setId(String mId) {
-        this.mId = mId;
-    }
+  public void setEnd(String mEnd) {
+    this.mEnd = mEnd;
+  }
 
-    public String getTitle() {
-        return mTitle;
-    }
+  public String getClientName() {
+    return mClientName;
+  }
 
-    public void setTitle(String mTitle) {
-        this.mTitle = mTitle;
-    }
+  public void setClientName(String mClientName) {
+    this.mClientName = mClientName;
+  }
 
-    public String getDescription() {
-        return mDescription;
-    }
+  public String getId() {
+    return mId;
+  }
 
-    public void setDescription(String mDescription) {
-        this.mDescription = mDescription;
-    }
+  public void setId(String mId) {
+    this.mId = mId;
+  }
 
-    public String getLocation() {
-        return mLocation;
-    }
+  public String getTitle() {
+    return mTitle;
+  }
 
-    public void setLocation(String mLocation) {
-        this.mLocation = mLocation;
-    }
+  public void setTitle(String mTitle) {
+    this.mTitle = mTitle;
+  }
 
-    public MyEvent() {
+  public String getDescription() {
+    return mDescription;
+  }
 
-    }
+  public void setDescription(String mDescription) {
+    this.mDescription = mDescription;
+  }
+
+  public String getLocation() {
+    return mLocation;
+  }
+
+  public void setLocation(String mLocation) {
+    this.mLocation = mLocation;
+  }
+
+  public MyEvent() {
+
+  }
 }

@@ -59,7 +59,7 @@ public class CheckInFragment extends Fragment implements View.OnClickListener {
                     public void onResponse(@NotNull Response<CheckMutation.Data> response) {
 
 //                        assert response.data() != null;
-                        Log.i("CHECK", String.valueOf(response.data()));
+                        Log.i("CHECK", String.valueOf(response));
 
                         SharedPreferences pref = Objects.requireNonNull(getActivity()).getSharedPreferences("Allocation",0);
 
@@ -71,6 +71,7 @@ public class CheckInFragment extends Fragment implements View.OnClickListener {
                             editor.apply();
                             Intent intent = new Intent(getActivity(), EventsActivity.class);
                             startActivity(intent);
+                            getActivity().finish();
                         } else {
                             Fragment login = new LoginFragment();
                             if(pref.getBoolean("isRememberMe", false)){

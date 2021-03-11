@@ -23,67 +23,80 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class Storage {
-    public void setMyEvents(List<MyEvent> mMyEvents) {
-        this.mMyEvents = mMyEvents;
+
+  private MyEvent mEvent;
+  private List<MyEvent> mMyEvents;
+  public String token = "";
+  private static Storage sStorage;
+
+  public static Storage get(Context context) {
+    if (sStorage == null) {
+      sStorage = new Storage(context);
     }
+    return sStorage;
+  }
 
-    private List<MyEvent> mMyEvents;
-    public String token = "";
-    private static Storage sStorage;
-    public static Storage get(Context context) {
-        if (sStorage == null) {
-            sStorage = new Storage(context);
-        }
-        return sStorage;
-    }
-    private Storage(Context context) {
-        mMyEvents = new ArrayList<>();
-    }
-    public List<MyEvent> getMyEvents() {
-        return mMyEvents;
-    }
 
-    static public ApolloClient provideApolloClient(final Context context) {
+  public void setMyEvents(List<MyEvent> mMyEvents) {
+    this.mMyEvents = mMyEvents;
+  }
 
-        final SharedPreferences pref = context.getSharedPreferences("Allocation", 0); // 0 - for private mode
-        return ApolloClient.builder()
-                .serverUrl("http://45.32.157.171:9090/graphql")
-                .okHttpClient(new OkHttpClient().newBuilder()
-                        .addInterceptor(
-                                new Interceptor() {
-                                    @NotNull
-                                    @Override
-                                    public Response intercept(@NotNull Interceptor.Chain chain) throws IOException {
-                                        Request original = chain.request();
+  public void setEvent(MyEvent event) {
+    this.mEvent = event;
+  }
 
-                                        Request request = original.newBuilder()
-                                                .header("Authorization", pref.getString("token",""))
-                                                .method(original.method(), original.body())
-                                                .build();
 
-                                        return chain.proceed(request);
-                                    }
-                                })
-                        .build())
+  private Storage(Context context) {
+    mMyEvents = new ArrayList<>();
+    mEvent = new MyEvent();
+  }
+
+  public List<MyEvent> getMyEvents() {
+    return mMyEvents;
+  }
+  public MyEvent getEvent() {
+    return mEvent;
+  }
+
+  static public ApolloClient provideApolloClient(final Context context) {
+
+    final SharedPreferences pref = context.getSharedPreferences("Allocation", 0); // 0 - for private mode
+    return ApolloClient.builder()
+      .serverUrl("http://45.32.157.171:9090/graphql")
+      .okHttpClient(new OkHttpClient().newBuilder()
+        .addInterceptor(
+          new Interceptor() {
+            @NotNull
+            @Override
+            public Response intercept(@NotNull Interceptor.Chain chain) throws IOException {
+              Request original = chain.request();
+
+              Request request = original.newBuilder()
+                .header("Authorization", pref.getString("token", ""))
+                .method(original.method(), original.body())
                 .build();
+
+              return chain.proceed(request);
+            }
+          })
+        .build())
+      .build();
+  }
+
+  static public String convertDateTimeFormat(String inputPattern, String outputPattern, String dateTimeStamp) {
+    @SuppressLint("SimpleDateFormat")
+    SimpleDateFormat inputFormat = new SimpleDateFormat(inputPattern);
+    @SuppressLint("SimpleDateFormat")
+    SimpleDateFormat outputFormat = new SimpleDateFormat(outputPattern);
+    try {
+      Date date = inputFormat.parse(dateTimeStamp);
+      assert date != null;
+      return outputFormat.format(date);
+    } catch (ParseException e) {
+      e.printStackTrace();
+      return null;
     }
-
-
-
-    static public String convertDateTimeFormat(String inputPattern, String outputPattern, String dateTimeStamp){
-        @SuppressLint("SimpleDateFormat")
-        SimpleDateFormat inputFormat = new SimpleDateFormat(inputPattern);
-        @SuppressLint("SimpleDateFormat")
-        SimpleDateFormat outputFormat = new SimpleDateFormat(outputPattern);
-        try {
-            Date date = inputFormat.parse(dateTimeStamp);
-            assert date != null;
-            return outputFormat.format(date);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
+  }
 
 
 }

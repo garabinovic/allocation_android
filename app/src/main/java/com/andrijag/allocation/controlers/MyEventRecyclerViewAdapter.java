@@ -40,7 +40,7 @@ public class MyEventRecyclerViewAdapter extends RecyclerView.Adapter<MyEventRecy
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        String time = mValues.get(position).getFrom()+"-"+mValues.get(position).getTo();
+        String time = mValues.get(position).getStart()+"-"+mValues.get(position).getEnd();
         holder.mTime.setText(time);
         holder.mEventTitle.setText(mValues.get(position).getTitle());
         holder.mClientName.setText(mValues.get(position).getClientName());

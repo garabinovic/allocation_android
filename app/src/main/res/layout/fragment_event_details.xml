@@ -1,15 +1,232 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".controlers.EventDetailsFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:id="@+id/idText"
+<RelativeLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:orientation="vertical">
+
+  <LinearLayout
+    android:id="@+id/base_header"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center_vertical"
+      android:paddingStart="15dp"
+      android:paddingEnd="15dp"
+      android:layout_marginTop="10dp"
+      android:layout_marginBottom="30dp"
+      tools:ignore="RtlSymmetry">
+
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:fontFamily="@font/source_sans_pro_bold"
+        android:letterSpacing="0.36"
+        android:maxLines="1"
+        android:text="@string/app_name"
+        android:textAllCaps="true"
+        android:textColor="@color/orange"
+        android:textSize="18sp" />
+    </LinearLayout>
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="40dp"
+      android:orientation="horizontal"
+      >
+      <TextView
+        android:layout_width="60dp"
+        android:layout_height="match_parent"
+        android:textSize="30sp"
+        android:gravity="center"
+        android:text="back"/>
+
+      <TextView
+        android:id="@+id/e_title"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:textSize="20sp"
+        android:layout_margin="10dp"
+        android:text="Event Tielw 1">
+
+      </TextView>
+
+    </LinearLayout>
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="250dp">
+
+      <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:src="@drawable/map_image"
+        android:scaleType = "centerCrop"
+        />
+    </LinearLayout>
 
-</FrameLayout>
+  </LinearLayout>
+
+  <LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/base_header"
+    android:layout_alignParentStart="true"
+    android:layout_alignParentEnd="true"
+    android:layout_alignParentBottom="true"
+    android:layout_marginStart="20dp"
+    android:layout_marginTop="-30dp"
+    android:layout_marginEnd="20dp"
+    android:layout_marginBottom="75dp"
+    android:background="#FFFFFF"
+    android:orientation="vertical"
+    android:padding="15dp"
+    >
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="17dp"
+      android:orientation="horizontal"
+      android:layout_marginBottom="10dp"
+      >
+
+      <TextView
+        android:layout_width="100dp"
+        android:layout_height="match_parent"
+        android:textSize="12sp"
+        android:lineHeight="16sp"
+        android:textColor="@color/event_label"
+        android:fontFamily="@font/poppins_semi_bold"
+        android:text="@string/time" />
+
+      <TextView
+        android:id="@+id/event_time"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:textSize="12sp"
+        android:lineHeight="16sp"
+        android:textColor="@color/event_text"
+        android:fontFamily="@font/poppins_regular"
+        android:text="10:30 - 11:00"
+        />
+
+    </LinearLayout>
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="17dp"
+      android:orientation="horizontal"
+      android:layout_marginBottom="10dp"
+      >
+
+      <TextView
+        android:layout_width="100dp"
+        android:layout_height="match_parent"
+        android:textSize="12sp"
+        android:lineHeight="16sp"
+        android:textColor="@color/event_label"
+        android:fontFamily="@font/poppins_semi_bold"
+        android:text="@string/location" />
+
+      <TextView
+        android:id="@+id/event_location"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:textSize="12sp"
+        android:lineHeight="16sp"
+        android:textColor="@color/event_text"
+        android:fontFamily="@font/poppins_regular"
+        android:text="256 rue garibaldi"
+        />
+
+    </LinearLayout>
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="17dp"
+      android:orientation="horizontal"
+      android:layout_marginBottom="10dp"
+      >
+
+      <TextView
+        android:layout_width="100dp"
+        android:layout_height="match_parent"
+        android:textSize="12sp"
+        android:lineHeight="16sp"
+        android:textColor="@color/event_label"
+        android:fontFamily="@font/poppins_semi_bold"
+        android:text="@string/event_title" />
+
+      <TextView
+        android:id="@id/event_title"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:textSize="12sp"
+        android:lineHeight="16sp"
+        android:textColor="@color/event_text"
+        android:fontFamily="@font/poppins_regular"
+        android:text="Groupe BPCE"
+        />
+
+    </LinearLayout>
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      android:layout_marginBottom="10dp"
+      >
+
+      <TextView
+        android:layout_width="100dp"
+        android:layout_height="17dp"
+        android:textSize="12sp"
+        android:lineHeight="16sp"
+        android:textColor="@color/event_label"
+        android:fontFamily="@font/poppins_semi_bold"
+        android:text="Information" />
+
+      <TextView
+        android:id="@+id/event_information"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:textSize="12sp"
+        android:lineHeight="16sp"
+        android:textColor="@color/event_text"
+        android:fontFamily="@font/poppins_regular"
+        android:text="Mobile applications are one of the best ways to engage with users - no wonder everyone wants to build one! Wouldn't it be great if you could use your web development knowledge, combined with your React knowledge, to build mobile apps with that? That's exactly what React Native allows you to do!"
+        />
+
+    </LinearLayout>
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      android:layout_margin="10dp"
+      >
+
+      <Button
+        android:id="@+id/manual_start_stop_btn"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:text="@string/start"
+        />
+
+    </LinearLayout>
+
+
+
+
+  </LinearLayout>
+
+
+</RelativeLayout>
+
+
+

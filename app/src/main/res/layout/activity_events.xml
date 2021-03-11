@@ -1,9 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-<!--    android:id="@+id/events_fragment_container"-->
-<!--    android:layout_width="match_parent"-->
-<!--    android:layout_height="match_parent"-->
-<!--    />-->
 
 <androidx.coordinatorlayout.widget.CoordinatorLayout
 xmlns:android="http://schemas.android.com/apk/res/android"
@@ -15,7 +10,7 @@ android:layout_height="match_parent">
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <FrameLayout
         android:id="@+id/events_fragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -49,7 +44,7 @@ android:layout_height="match_parent">
                 android:gravity="center"
                 android:id="@+id/simpleImageView"
                 android:src="@drawable/ic_action_events_list"
-                android:contentDescription="list" />
+                android:contentDescription="@string/list" />
 
             <TextView
                 style="?android:attr/borderlessButtonStyle"
@@ -120,7 +115,7 @@ android:layout_height="match_parent">
                 android:gravity="center"
                 android:id="@+id/simpleImageView4"
                 android:src="@drawable/ic_action_events_account"
-                android:contentDescription="account" />
+                android:contentDescription="@string/account" />
 
         </LinearLayout>
     </com.google.android.material.bottomappbar.BottomAppBar>
@@ -132,7 +127,7 @@ android:layout_height="match_parent">
         android:src="@drawable/btn"
         app:layout_anchor="@id/bar"
         app:fabCustomSize="52dp"
-        android:contentDescription="Scanne" />
+        android:contentDescription="@string/scanne" />
 
 
 

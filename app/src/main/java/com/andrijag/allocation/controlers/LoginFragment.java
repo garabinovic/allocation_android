@@ -121,7 +121,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                             Log.i("LOCATON  ERROR", response.errors().get(0).message());
                             goToErrorFragment(response.errors().get(0).message());
                         } else {
-                            Log.i("MAMAMAMAMAM", response.data().login().token());
+                            Log.i("TOKEN", response.data().login().token());
 
                             SharedPreferences pref = Objects.requireNonNull(getActivity()).getSharedPreferences("Allocation",0);
                             @SuppressLint("CommitPrefEdits") SharedPreferences.Editor editor = pref.edit();
@@ -133,6 +133,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
                             Intent intent = new Intent(getActivity(), EventsActivity.class);
                             startActivity(intent);
+                            getActivity().finish();
                         }
 
 

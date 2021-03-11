@@ -2,6 +2,7 @@ package com.andrijag.allocation.controlers;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 
@@ -44,185 +45,192 @@ import java.util.Objects;
 
 public class QcReaderFragment extends Fragment {
 
-    private static final int REQUEST_CAMERA_PERMISSION = 201;
+  private static final int REQUEST_CAMERA_PERMISSION = 201;
 
-    private SurfaceView surfaceView;
-    private TextView txtBarcodeValue;
-    private CameraSource cameraSource;
-    private Button btnAction;
-    private String intentData = "";
+  private SurfaceView surfaceView;
+  private TextView txtBarcodeValue;
+  private CameraSource cameraSource;
+  private Button btnAction;
+  private String intentData = "";
 
-    public QcReaderFragment() {}
+  private boolean isScanned = false;
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
+  public QcReaderFragment() {
+  }
 
-        super.onCreate(savedInstanceState);
-        ((EventsActivity) Objects.requireNonNull(getActivity())).scanFab.setImageResource(R.drawable.btn_2);
-        ((EventsActivity) Objects.requireNonNull(getActivity())).isScanFab = false;
+  @Override
+  public void onCreate(Bundle savedInstanceState) {
 
-    }
+    super.onCreate(savedInstanceState);
+    ((EventsActivity) Objects.requireNonNull(getActivity())).scanFab.setImageResource(R.drawable.btn_2);
+    ((EventsActivity) Objects.requireNonNull(getActivity())).isScanFab = false;
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_qc_reader, container, false);
-        txtBarcodeValue = view.findViewById(R.id.txtBarcodeValue);
-        surfaceView = view.findViewById(R.id.surfaceView);
+  }
+
+  @Override
+  public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                           Bundle savedInstanceState) {
+    View view = inflater.inflate(R.layout.fragment_qc_reader, container, false);
+    txtBarcodeValue = view.findViewById(R.id.txtBarcodeValue);
+    surfaceView = view.findViewById(R.id.surfaceView);
 //        btnAction = view.findViewById(R.id.btnAction);
 
-        return view;
+    return view;
 
-    }
+  }
 
-    private void initialiseDetectorsAndSources() {
+  private void initialiseDetectorsAndSources() {
 
-        Toast.makeText(getActivity(), "Barcode scanner started", Toast.LENGTH_SHORT).show();
+    Toast.makeText(getActivity(), "Barcode scanner started", Toast.LENGTH_SHORT).show();
 
-        BarcodeDetector barcodeDetector = new BarcodeDetector.Builder(getActivity())
-                .setBarcodeFormats(Barcode.ALL_FORMATS)
-                .build();
+    BarcodeDetector barcodeDetector = new BarcodeDetector.Builder(getActivity())
+      .setBarcodeFormats(Barcode.ALL_FORMATS)
+      .build();
 
-        cameraSource = new CameraSource.Builder(Objects.requireNonNull(getActivity()), barcodeDetector)
-                .setRequestedPreviewSize(1920, 1080)
-                .setAutoFocusEnabled(true) //you should add this feature
-                .build();
+    cameraSource = new CameraSource.Builder(Objects.requireNonNull(getActivity()), barcodeDetector)
+      .setRequestedPreviewSize(1920, 1080)
+      .setAutoFocusEnabled(true) //you should add this feature
+      .build();
 
-        surfaceView.getHolder().addCallback(new SurfaceHolder.Callback() {
-            @Override
-            public void surfaceCreated(SurfaceHolder holder) {
-                try {
-                    if (ActivityCompat.checkSelfPermission(Objects.requireNonNull(getActivity()), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-                        cameraSource.start(surfaceView.getHolder());
-                    } else {
-                        ActivityCompat.requestPermissions(getActivity(), new
-                                String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
-                    }
+    surfaceView.getHolder().addCallback(new SurfaceHolder.Callback() {
+      @Override
+      public void surfaceCreated(SurfaceHolder holder) {
+        try {
+          if (ActivityCompat.checkSelfPermission(Objects.requireNonNull(getActivity()), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+            cameraSource.start(surfaceView.getHolder());
+          } else {
+            ActivityCompat.requestPermissions(getActivity(), new
+              String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
+          }
 
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
 
-            }
+      }
 
-            @Override
-            public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-            }
+      @Override
+      public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+      }
 
-            @Override
-            public void surfaceDestroyed(SurfaceHolder holder) {
-                cameraSource.stop();
-            }
-        });
+      @Override
+      public void surfaceDestroyed(SurfaceHolder holder) {
+        cameraSource.stop();
+      }
+    });
 
-        barcodeDetector.setProcessor(new Detector.Processor<Barcode>() {
-            @Override
-            public void release() {
-                Toast.makeText(getActivity(), "To prevent memory leaks barcode scanner has been stopped", Toast.LENGTH_SHORT).show();
-            }
+    barcodeDetector.setProcessor(new Detector.Processor<Barcode>() {
+      @Override
+      public void release() {
+        Toast.makeText(getActivity(), "To prevent memory leaks barcode scanner has been stopped", Toast.LENGTH_SHORT).show();
+      }
 
-            @Override
-            public void receiveDetections(Detector.Detections<Barcode> detections) {
-                final SparseArray<Barcode> barcodes = detections.getDetectedItems();
-                if (barcodes.size() != 0) {
+      @Override
+      public void receiveDetections(Detector.Detections<Barcode> detections) {
+        final SparseArray<Barcode> barcodes = detections.getDetectedItems();
+        if (barcodes.size() != 0) {
 //                    btnAction.setText("CHECK DATA");
-                    intentData = barcodes.valueAt(0).displayValue;
-                    try {
-                        JSONObject qcObj = new JSONObject(intentData);
-                        if(qcObj.has("locationId")){
-                            Log.i("REZULTAT", qcObj.getString("locationId"));
-                            getEventByLocationId(qcObj.getString("locationId"));
-//                            Fragment start = new StartStopEventFragment();
-//                            FragmentManager fragmentManager = getParentFragmentManager();
-//                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//
-//                            fragmentTransaction.replace(R.id.events_fragment_container, start);
-//                            fragmentTransaction.addToBackStack(null);
-//                            fragmentTransaction.commit();
-                        } else {
-                            goToErrorFragment("No Location ID on QC");
-                        }
+          intentData = barcodes.valueAt(0).displayValue;
+          try {
+            JSONObject qcObj = new JSONObject(intentData);
+            if (qcObj.has("locationId")) {
+              if(!isScanned){
+                isScanned = true;
+                Log.i("REZULTAT", qcObj.getString("locationId"));
+                Intent intent = new Intent(getContext(), LocationEventsActivity.class);
+                intent.putExtra("LOCATION_ID", qcObj.getString("locationId"));
+                startActivity(intent);
+                Objects.requireNonNull(getActivity()).getSupportFragmentManager().popBackStack();
+//              Objects.requireNonNull(getActivity()).finish();
+              }
 
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-//                    txtBarcodeValue.setText(intentData);
-                    // ovde se salje locationid da se dobije ebent alo ga ima
-                    // ukoliko se dobije event otbaraju se detalji sa aktivnim start dugmetom
-                    // ukoliko se dobije greska otbara se fragment za gresku sa ofgovarajucim tekstom
-                }
+
+//                            getEventByLocationId(qcObj.getString("locationId"));
+
+            } else {
+              goToErrorFragment("No Location ID on QC");
             }
-        });
-    }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        initialiseDetectorsAndSources();
-    }
+          } catch (JSONException e) {
+            e.printStackTrace();
+          }
+//                    txtBarcodeValue.setText(intentData);
+          // ovde se salje locationid da se dobije ebent alo ga ima
+          // ukoliko se dobije event otbaraju se detalji sa aktivnim start dugmetom
+          // ukoliko se dobije greska otbara se fragment za gresku sa ofgovarajucim tekstom
+        }
+      }
+    });
+  }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        cameraSource.release();
-        ((EventsActivity) Objects.requireNonNull(getActivity())).scanFab.setImageResource(R.drawable.btn);
-        ((EventsActivity) Objects.requireNonNull(getActivity())).isScanFab = true;
+  @Override
+  public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    super.onViewCreated(view, savedInstanceState);
+    initialiseDetectorsAndSources();
+  }
 
-    }
+  @Override
+  public void onDestroyView() {
+    super.onDestroyView();
+    cameraSource.release();
+    ((EventsActivity) Objects.requireNonNull(getActivity())).scanFab.setImageResource(R.drawable.btn);
+    ((EventsActivity) Objects.requireNonNull(getActivity())).isScanFab = true;
 
-    public void getEventByLocationId(String id){
-        EventByLocationIdQuery eventByLocationIdQuery = EventByLocationIdQuery.builder()
-                .locationId(id)
-                .build();
-        Storage.provideApolloClient(Objects.requireNonNull(getActivity()))
-                .query(eventByLocationIdQuery)
-                .enqueue(new ApolloCall.Callback<EventByLocationIdQuery.Data>() {
-                    @Override
-                    public void onResponse(@NotNull Response<EventByLocationIdQuery.Data> response) {
-                        if(response.hasErrors()){
-                            Log.i("LOCATON  ERROR", response.errors().get(0).message());
-                            goToErrorFragment(response.errors().get(0).message());
-                        } else {
-                            Log.i("LOCATON ID RESPONSE", response.data().eventByLocationId().location());
+  }
 
-                            goToStartStopFragment(
-                                    response.data().eventByLocationId().id(),
-                                    response.data().eventByLocationId().canStart(),
-                                    response.data().eventByLocationId().canStop()
-                                    );
-                        }
+//    public void getEventByLocationId(String id){
+//        EventByLocationIdQuery eventByLocationIdQuery = EventByLocationIdQuery.builder()
+//                .locationId(id)
+//                .build();
+//        Storage.provideApolloClient(Objects.requireNonNull(getActivity()))
+//                .query(eventByLocationIdQuery)
+//                .enqueue(new ApolloCall.Callback<EventByLocationIdQuery.Data>() {
+//                    @Override
+//                    public void onResponse(@NotNull Response<EventByLocationIdQuery.Data> response) {
+//                        if(response.hasErrors()){
+//                            Log.i("LOCATON  ERROR", response.errors().get(0).message());
+//                            goToErrorFragment(response.errors().get(0).message());
+//                        } else {
+//                            Log.i("LOCATON ID RESPONSE", response.data().eventByLocationId().location());
+//
+//                            goToStartStopFragment(
+//                                    response.data().eventByLocationId().id(),
+//                                    response.data().eventByLocationId().canStart(),
+//                                    response.data().eventByLocationId().canStop()
+//                                    );
+//                        }
+//
+//                    }
+//
+//                    @Override
+//                    public void onFailure(@NotNull ApolloException e) {
+//                        Log.i("ERROR ID RESPONSE", e.getMessage());
+//
+//                    }
+//                });
+//
+//    }
 
-                    }
+  public void goToErrorFragment(String message) {
+    Fragment errorFragment = ErrorFragment.newInstance(message);
+    FragmentManager fragmentManager = getParentFragmentManager();
+    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-                    @Override
-                    public void onFailure(@NotNull ApolloException e) {
-                        Log.i("ERROR ID RESPONSE", e.getMessage());
-
-                    }
-                });
-
-    }
-
-    public void goToErrorFragment(String message) {
-        Fragment errorFragment = ErrorFragment.newInstance(message);
-        FragmentManager fragmentManager = getParentFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
-        fragmentTransaction.replace(R.id.events_fragment_container, errorFragment);
+    fragmentTransaction.replace(R.id.events_fragment_container, errorFragment);
 //        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
-    }
+    fragmentTransaction.commit();
+  }
 
-    public void goToStartStopFragment(String id, Boolean canStart, Boolean canStop) {
-        Fragment startStopFragment = StartStopEventFragment.newInstance(id,canStart,canStop);
-        FragmentManager fragmentManager = getParentFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
-        fragmentTransaction.replace(R.id.events_fragment_container, startStopFragment);
-//        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
-
-    }
+//  public void goToStartStopFragment(String id, Boolean canStart, Boolean canStop) {
+//    Fragment startStopFragment = StartStopEventFragment.newInstance(id, canStart, canStop);
+//    FragmentManager fragmentManager = getParentFragmentManager();
+//    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//
+//    fragmentTransaction.replace(R.id.events_fragment_container, startStopFragment);
+////        fragmentTransaction.addToBackStack(null);
+//    fragmentTransaction.commit();
+//
+//  }
 
 
 }

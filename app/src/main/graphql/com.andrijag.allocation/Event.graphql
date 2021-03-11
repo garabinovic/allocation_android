@@ -5,8 +5,8 @@ query Event($id: String!) {
         description,
         location,
         clientName,
-        from,
-        to,
+        start,
+        end,
         canStart,
         canStop
     }

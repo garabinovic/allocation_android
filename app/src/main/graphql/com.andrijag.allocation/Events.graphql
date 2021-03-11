@@ -1,7 +1,7 @@
 query Events{
     events {
-        from,
-        to,
+        start,
+        end,
         title,
         location,
         clientName
