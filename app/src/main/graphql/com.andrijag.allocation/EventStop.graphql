@@ -1,5 +1,5 @@
-mutation EventStop($id: String!){
-  eventStop(id:$id){
+mutation EventStop($id: String!, $description: String!){
+  eventStop(id:$id, description:$description){
     id
   }
 }

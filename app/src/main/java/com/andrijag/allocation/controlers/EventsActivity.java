@@ -26,6 +26,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.andrijag.allocation.BuildConfig;
+import com.andrijag.allocation.EventByDateForUserQuery;
 import com.andrijag.allocation.EventsQuery;
 import com.andrijag.allocation.LoginMutation;
 import com.andrijag.allocation.R;
@@ -68,6 +69,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -119,6 +121,8 @@ public class EventsActivity extends AppCompatActivity implements EventsFragment.
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_events);
 
+    Date currentTime = Calendar.getInstance().getTime();
+
     scanFab = findViewById(R.id.scanFab);
     scanFab.setImageResource(R.drawable.btn);
 
@@ -150,25 +154,29 @@ public class EventsActivity extends AppCompatActivity implements EventsFragment.
   }
 
   private void getEvents() {
-    EventsQuery eventsQuery = EventsQuery.builder().build();
+    EventByDateForUserQuery eventsQuery = EventByDateForUserQuery.builder()
+      .date("2021-03-18")
+      .build();
     Storage.provideApolloClient(this)
       .query(eventsQuery)
-      .enqueue(new ApolloCall.Callback<EventsQuery.Data>() {
+      .enqueue(new ApolloCall.Callback<EventByDateForUserQuery.Data>() {
         @Override
-        public void onResponse(@NotNull Response<EventsQuery.Data> response) {
+        public void onResponse(@NotNull Response<EventByDateForUserQuery.Data> response) {
           assert response.data() != null;
-          Log.i("MY EVENTS", response.data().events().toString());
+          Log.i("MY EVENTS", response.data().eventByDateForUser().toString());
           List<MyEvent> events = new ArrayList<MyEvent>();
           ;
-          for (int i = 0; i < response.data().events().size(); i++) {
+          for (int i = 0; i < response.data().eventByDateForUser().size(); i++) {
             MyEvent event = new MyEvent();
 
-            event.setStart(Storage.convertDateTimeFormat("yyyy-MM-dd HH:mm:ss", "HH:mm", response.data().events().get(i).start()));
-            event.setEnd(Storage.convertDateTimeFormat("yyyy-MM-dd HH:mm:ss", "HH:mm", response.data().events().get(i).end()));
-            event.setTitle(response.data().events().get(i).title());
-            event.setLocation(response.data().events().get(i).location());
-            event.setClientName(response.data().events().get(i).clientName());
-            Log.i("MY ZZZZ", String.valueOf(response.data().events().get(i)));
+            event.setId(response.data().eventByDateForUser().get(i).id());
+            event.setStart(Storage.convertDateTimeFormat("yyyy-MM-dd HH:mm:ss", "HH:mm", response.data().eventByDateForUser().get(i).start()));
+            event.setEnd(Storage.convertDateTimeFormat("yyyy-MM-dd HH:mm:ss", "HH:mm", response.data().eventByDateForUser().get(i).end()));
+            event.setTitle(response.data().eventByDateForUser().get(i).title());
+            event.setLocation(response.data().eventByDateForUser().get(i).location());
+            event.setClientName(response.data().eventByDateForUser().get(i).clientName());
+
+            Log.i("MY ZZZZ", String.valueOf(response.data().eventByDateForUser().get(i)));
             events.add(event);
           }
           Storage.get(getApplicationContext()).setMyEvents(events);
@@ -510,3 +518,4 @@ public class EventsActivity extends AppCompatActivity implements EventsFragment.
     startActivity(intent);
   }
 }
+

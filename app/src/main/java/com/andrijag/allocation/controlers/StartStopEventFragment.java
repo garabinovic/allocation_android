@@ -114,6 +114,7 @@ public class StartStopEventFragment extends Fragment {
     public void start(){
         EventStartMutation eventStartMutation = EventStartMutation.builder()
                 .id(eventId)
+                .description("")
                 .build();
 
         Storage.provideApolloClient(Objects.requireNonNull(getActivity()))
@@ -140,6 +141,7 @@ public class StartStopEventFragment extends Fragment {
     public void stop(){
         EventStopMutation eventStoptMutation = EventStopMutation.builder()
                 .id(eventId)
+                .description("")
                 .build();
 
         Storage.provideApolloClient(Objects.requireNonNull(getActivity()))

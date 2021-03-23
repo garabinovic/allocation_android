@@ -40,19 +40,23 @@
       android:layout_height="40dp"
       android:orientation="horizontal"
       >
-      <TextView
-        android:layout_width="60dp"
-        android:layout_height="match_parent"
-        android:textSize="30sp"
-        android:gravity="center"
-        android:text="back"/>
+      <ImageView
+        android:id="@+id/back_arrow_btn"
+        android:layout_width="56dp"
+        android:layout_height="wrap_content"
+        android:src="@drawable/back_arrow_image"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+
+        />
 
       <TextView
         android:id="@+id/e_title"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:textSize="20sp"
-        android:layout_margin="10dp"
+        android:textSize="14sp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
         android:text="Event Tielw 1">
 
       </TextView>

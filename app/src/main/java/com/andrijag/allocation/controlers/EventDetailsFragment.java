@@ -81,7 +81,7 @@ public class EventDetailsFragment extends Fragment {
     return view;
   }
 
-  public void setView(MyEvent event){
+  public void setView(final MyEvent event){
     mTime.setText(event.getStart());
     mLocation.setText(event.getLocation());
     mEventTitle.setText(event.getTitle());
@@ -91,7 +91,8 @@ public class EventDetailsFragment extends Fragment {
       mManualStartStopButton.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            Toast.makeText(getActivity(), "STOP NOW", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getActivity(), "STOP NOW", Toast.LENGTH_SHORT).show();
+          goToManualStartStopFragment(event.getId(), true);
         }
       });
     }
@@ -100,12 +101,23 @@ public class EventDetailsFragment extends Fragment {
       mManualStartStopButton.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-          Toast.makeText(getActivity(), "START NOW", Toast.LENGTH_SHORT).show();
+//          Toast.makeText(getActivity(), "START NOW", Toast.LENGTH_SHORT).show();
+          goToManualStartStopFragment(event.getId(), false);
+
         }
       });
     }
 
 
+  }
+
+  public void goToManualStartStopFragment(String eventId, Boolean isStart) {
+    Fragment manualStartStopFragment = ManualStartStopFragment.newInstance(eventId,isStart);
+    FragmentManager fragmentManager = getParentFragmentManager();
+    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+    fragmentTransaction.replace(R.id.events_details_container, manualStartStopFragment);
+    fragmentTransaction.addToBackStack(null);
+    fragmentTransaction.commit();
   }
 
 

@@ -1,5 +1,5 @@
-mutation EventStart($id: String!){
-  eventStart(id:$id){
+mutation EventStart($id: String!, $description: String!){
+  eventStart(id:$id, description:$description){
     id
   }
 }

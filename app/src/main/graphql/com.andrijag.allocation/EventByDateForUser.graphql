@@ -1,0 +1,14 @@
+query EventByDateForUser($date: String!){
+    eventByDateForUser(date: $date){
+        id,
+        title,
+        description,
+        location,
+        clientName,
+        start,
+        end
+    }
+}
+
+
+
