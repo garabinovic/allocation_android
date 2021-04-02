@@ -107,8 +107,6 @@ public class StartStopEventFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-//        ((EventsActivity) Objects.requireNonNull(getActivity())).scanFab.show();
-//        ((EventsActivity) Objects.requireNonNull(getActivity())).bottomAppBar.setVisibility(View.VISIBLE);
     }
 
     public void start(){
@@ -169,27 +167,17 @@ public class StartStopEventFragment extends Fragment {
         Fragment errorFragment = ErrorFragment.newInstance(message);
         FragmentManager fragmentManager = getParentFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.events_fragment_container, errorFragment);
+        fragmentTransaction.replace(R.id.location_events_fragment_container, errorFragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
 
-//    public void goToEventDetailsFragment(String id) {
-////      Toast.makeText(getContext(), id, Toast.LENGTH_SHORT).show();
-//        Fragment eventDetails = EventDetailsFragment.newInstance(id);
-//        FragmentManager fragmentManager = getParentFragmentManager();
-//        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//        fragmentTransaction.replace(R.id.events_fragment_container, eventDetails);
-//        fragmentTransaction.addToBackStack(null);
-//        fragmentTransaction.commit();
-//    }
 
       public void goToEventDetailsActivity(String id) {
       Intent intent = new Intent(getContext(), EventDetailsActivity.class);
       intent.putExtra("EVENT_ID", id);
       startActivity(intent);
       getActivity().finish();
-
     }
 
 

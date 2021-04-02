@@ -11,7 +11,7 @@
     android:layout_height="wrap_content">
 
     <FrameLayout
-      android:id="@+id/events_fragment_container"
+      android:id="@+id/location_events_fragment_container"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       />

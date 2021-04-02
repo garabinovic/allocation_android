@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:orientation="vertical">
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_vertical"
+    android:paddingStart="15dp"
+    android:paddingEnd="15dp"
+    android:layout_marginTop="10dp"
+    android:layout_marginBottom="16dp"
+    tools:ignore="RtlSymmetry">
+
+    <TextView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:textAlignment="center"
+      android:fontFamily="@font/source_sans_pro_bold"
+      android:letterSpacing="0.36"
+      android:maxLines="1"
+      android:text="@string/app_name"
+      android:textAllCaps="true"
+      android:textColor="@color/orange"
+      android:textSize="18sp" />
+  </LinearLayout>
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="40dp"
+    android:orientation="horizontal"
+    >
+    <ImageView
+      android:id="@+id/back_arrow_btn"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:src="@drawable/ic_arrow"
+      android:paddingStart="20dp"
+      android:paddingEnd="20dp"
+      android:paddingTop="14dp"
+      android:paddingBottom="14dp"
+      />
+
+    <TextView
+      android:id="@+id/header_title"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:textSize="14sp"
+      android:layout_marginTop="10dp"
+      android:layout_marginBottom="10dp"
+      />
+  </LinearLayout>
+
+<!--  <LinearLayout-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="wrap_content"-->
+<!--    android:paddingStart="15dp"-->
+<!--    android:paddingEnd="15dp"-->
+<!--    android:layout_marginTop="10dp"-->
+<!--    android:layout_marginBottom="10dp"-->
+<!--    android:baselineAligned="false">-->
+<!--    <LinearLayout-->
+<!--      android:layout_width="0dp"-->
+<!--      android:layout_weight="1"-->
+<!--      android:layout_height="27sp"-->
+<!--      >-->
+<!--      <TextView-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:fontFamily="@font/poppins_medium"-->
+<!--        android:textColor="#8890A6"-->
+<!--        android:gravity="center_vertical"-->
+<!--        android:textSize="14sp"-->
+<!--        android:text="@string/event_list">-->
+<!--      </TextView>-->
+<!--    </LinearLayout>-->
+<!--    <LinearLayout-->
+<!--      android:layout_width="0dp"-->
+<!--      android:layout_weight="2"-->
+<!--      android:layout_height="wrap_content"-->
+<!--      android:gravity="end"-->
+<!--      android:baselineAligned="true"-->
+<!--      >-->
+
+<!--      <ImageButton-->
+<!--        android:id="@+id/previous"-->
+<!--        android:layout_width="27sp"-->
+<!--        android:layout_height="27sp"-->
+<!--        android:layout_gravity="center_vertical"-->
+<!--        android:background="@drawable/arrow_btn"-->
+<!--        android:src="@drawable/ic_chevron_left_black_24dp"-->
+<!--        android:contentDescription="Previous date" />-->
+
+
+<!--      <TextView-->
+<!--        android:id="@+id/dateString"-->
+<!--        android:layout_width="110dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_gravity="center_vertical"-->
+<!--        android:textAlignment="center"-->
+<!--        android:textSize="14sp"-->
+<!--        android:layout_marginLeft="10dp"-->
+<!--        android:layout_marginRight="10dp"-->
+<!--        android:fontFamily="@font/poppins_medium"-->
+<!--        android:textColor="#8890A6"-->
+<!--        android:text="Sep 30"-->
+<!--        tools:ignore="RtlCompat"-->
+<!--        />-->
+
+<!--      <ImageButton-->
+<!--        android:id="@+id/next"-->
+<!--        android:layout_width="27sp"-->
+<!--        android:layout_height="27sp"-->
+<!--        android:layout_gravity="center_vertical"-->
+<!--        android:background="@drawable/arrow_btn"-->
+<!--        android:src="@drawable/ic_chevron_right_black_24dp"-->
+<!--        android:contentDescription="Next date" />-->
+
+<!--    </LinearLayout>-->
+
+<!--  </LinearLayout>-->
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.recyclerview.widget.RecyclerView
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      android:id="@+id/list"
+      android:name="com.andrijag.allocation.controlers.EventsFragment"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_marginLeft="16dp"
+      android:layout_marginRight="16dp"
+      app:layoutManager="LinearLayoutManager"
+      tools:context=".controlers.EventsFragment"
+      tools:listitem="@layout/fragment_event2" />
+
+  </LinearLayout>
+
+
+
+</LinearLayout>

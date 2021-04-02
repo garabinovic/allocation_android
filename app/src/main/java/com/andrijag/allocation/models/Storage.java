@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -96,6 +97,18 @@ public class Storage {
       e.printStackTrace();
       return null;
     }
+  }
+
+  static public String getDateString(Date date, String outputFormat){
+    @SuppressLint("SimpleDateFormat") SimpleDateFormat dateString = new SimpleDateFormat(outputFormat);
+    return dateString.format(date);
+  }
+
+  public static Date getDay(Date date, int days) {
+    Calendar cal = Calendar.getInstance();
+    cal.setTime(date);
+    cal.add(Calendar.DATE, days); //minus number would decrement the days
+    return cal.getTime();
   }
 
 

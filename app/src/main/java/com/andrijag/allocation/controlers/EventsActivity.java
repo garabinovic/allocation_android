@@ -110,18 +110,11 @@ public class EventsActivity extends AppCompatActivity implements EventsFragment.
   public Boolean isScanFab = true;
   public BottomAppBar bottomAppBar;
 
-  @Override
-  protected void onRestart() {
-    super.onRestart();
-    getEvents();
-  }
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_events);
-
-    Date currentTime = Calendar.getInstance().getTime();
 
     scanFab = findViewById(R.id.scanFab);
     scanFab.setImageResource(R.drawable.btn);
@@ -135,71 +128,30 @@ public class EventsActivity extends AppCompatActivity implements EventsFragment.
           Toast.makeText(getApplicationContext(), "close", Toast.LENGTH_SHORT).show();
 
         }
-
-//                Toast.makeText(getApplicationContext(), "openScanner", Toast.LENGTH_SHORT).show();
       }
     });
 
     bottomAppBar = findViewById(R.id.bar);
 
-    // funkcija koja salje API pzoziv za listu events
-    getEvents();
+    FragmentManager fm = getSupportFragmentManager();
+    Fragment fragment = fm.findFragmentById(R.id.events_fragment_container);
+
+    if (fragment == null) {
+      fragment = new EventsFragment();
+      fm.beginTransaction()
+        .add(R.id.events_fragment_container, fragment)
+        .commit();
+    }
 
 
-    // initialize the necessary libraries
-    init();
-
-    // restore the values from saved instance state
-    restoreValuesFromBundle(savedInstanceState);
-  }
-
-  private void getEvents() {
-    EventByDateForUserQuery eventsQuery = EventByDateForUserQuery.builder()
-      .date("2021-03-18")
-      .build();
-    Storage.provideApolloClient(this)
-      .query(eventsQuery)
-      .enqueue(new ApolloCall.Callback<EventByDateForUserQuery.Data>() {
-        @Override
-        public void onResponse(@NotNull Response<EventByDateForUserQuery.Data> response) {
-          assert response.data() != null;
-          Log.i("MY EVENTS", response.data().eventByDateForUser().toString());
-          List<MyEvent> events = new ArrayList<MyEvent>();
-          ;
-          for (int i = 0; i < response.data().eventByDateForUser().size(); i++) {
-            MyEvent event = new MyEvent();
-
-            event.setId(response.data().eventByDateForUser().get(i).id());
-            event.setStart(Storage.convertDateTimeFormat("yyyy-MM-dd HH:mm:ss", "HH:mm", response.data().eventByDateForUser().get(i).start()));
-            event.setEnd(Storage.convertDateTimeFormat("yyyy-MM-dd HH:mm:ss", "HH:mm", response.data().eventByDateForUser().get(i).end()));
-            event.setTitle(response.data().eventByDateForUser().get(i).title());
-            event.setLocation(response.data().eventByDateForUser().get(i).location());
-            event.setClientName(response.data().eventByDateForUser().get(i).clientName());
-
-            Log.i("MY ZZZZ", String.valueOf(response.data().eventByDateForUser().get(i)));
-            events.add(event);
-          }
-          Storage.get(getApplicationContext()).setMyEvents(events);
-//                        Log.i("EVO IHHHHHHH", events.toString());
-
-          FragmentManager fm = getSupportFragmentManager();
-          Fragment fragment = fm.findFragmentById(R.id.events_fragment_container);
-
-          if (fragment == null) {
-            fragment = new EventsFragment();
-            fm.beginTransaction()
-              .add(R.id.events_fragment_container, fragment)
-              .commit();
-          }
-
-        }
-
-        @Override
-        public void onFailure(@NotNull ApolloException e) {
-          Log.e("ERROR TRALALALA", e.toString());
-        }
-      });
-
+//    // LOCATION FUNCTIONALITY !!!!!!!!!!!!!!!!!!
+//    // DON't DELETE THIS
+//    // UNCOMMENT ON RESUME and ON PAUSE and ON SAVE INSTANT STATES TOO
+//    // initialize the necessary libraries
+//    init();
+//
+//    // restore the values from saved instance state
+//    restoreValuesFromBundle(savedInstanceState);
   }
 
   private void init() {
@@ -276,28 +228,17 @@ public class EventsActivity extends AppCompatActivity implements EventsFragment.
 //            // location last updated time
 //            txtUpdatedOn.setText("Last updated on: " + mLastUpdateTime);
     }
-
-    toggleButtons();
   }
 
-  @Override
-  public void onSaveInstanceState(@NotNull Bundle outState) {
-    super.onSaveInstanceState(outState);
-    outState.putBoolean("is_requesting_updates", mRequestingLocationUpdates);
-    outState.putParcelable("last_known_location", mCurrentLocation);
-    outState.putString("last_updated_on", mLastUpdateTime);
+//  @Override
+//  public void onSaveInstanceState(@NotNull Bundle outState) {
+//    super.onSaveInstanceState(outState);
+//    outState.putBoolean("is_requesting_updates", mRequestingLocationUpdates);
+//    outState.putParcelable("last_known_location", mCurrentLocation);
+//    outState.putString("last_updated_on", mLastUpdateTime);
+//
+//  }
 
-  }
-
-  private void toggleButtons() {
-//        if (mRequestingLocationUpdates) {
-//            btnStartUpdates.setEnabled(false);
-//            btnStopUpdates.setEnabled(true);
-//        } else {
-//            btnStartUpdates.setEnabled(true);
-//            btnStopUpdates.setEnabled(false);
-//        }
-  }
 
   /**
    * Starting location updates
@@ -392,7 +333,6 @@ public class EventsActivity extends AppCompatActivity implements EventsFragment.
         @Override
         public void onComplete(@NonNull Task<Void> task) {
           Toast.makeText(getApplicationContext(), "Location updates stopped!", Toast.LENGTH_SHORT).show();
-          toggleButtons();
         }
       });
   }
@@ -435,18 +375,17 @@ public class EventsActivity extends AppCompatActivity implements EventsFragment.
     startActivity(intent);
   }
 
-  @Override
-  public void onResume() {
-    super.onResume();
-
-    // Resuming location updates depending on button state and
-    // allowed permissions
-    if (mRequestingLocationUpdates && checkPermissions()) {
-      startLocationUpdates();
-    }
-
-    updateLocationUI();
-  }
+//  @Override
+//  public void onResume() {
+//    super.onResume();
+//
+//    // Resuming location updates depending on button state and
+//    // allowed permissions
+//    if (mRequestingLocationUpdates && checkPermissions()) {
+//      startLocationUpdates();
+//    }
+//    updateLocationUI();
+//  }
 
   private boolean checkPermissions() {
     int permissionState = ActivityCompat.checkSelfPermission(this,
@@ -455,46 +394,15 @@ public class EventsActivity extends AppCompatActivity implements EventsFragment.
   }
 
 
-  @Override
-  protected void onPause() {
-    super.onPause();
-
-    if (mRequestingLocationUpdates) {
-      // pausing location updates
-      stopLocationUpdates();
-    }
-  }
-
-
-////////////////////////////////////////////////////
-
-
-//    @Override
-//    public void onListFragmentInteraction(DummyContent.DummyItem item) {
-////        Intent intent = new Intent(EventsActivity.this, QcScannerActivity.class);
-////        startActivity(intent);
-////
+//  @Override
+//  protected void onPause() {
+//    super.onPause();
 //
-//        Fragment qcr = new QcReaderFragment();
-//        FragmentManager fragmentManager = getSupportFragmentManager();
-//        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//
-//        fragmentTransaction.replace(R.id.events_fragment_container, qcr);
-//        fragmentTransaction.addToBackStack(null);
-//        fragmentTransaction.commit();
+//    if (mRequestingLocationUpdates) {
+//      // pausing location updates
+//      stopLocationUpdates();
 //    }
-
-//    @Override
-//    public void onListFragmentInteraction(DummyContent.EventItem item) {
-//
-////        Fragment qcr = new QcReaderFragment();
-////        FragmentManager fragmentManager = getSupportFragmentManager();
-////        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-////
-////        fragmentTransaction.replace(R.id.events_fragment_container, qcr);
-////        fragmentTransaction.addToBackStack(null);
-////        fragmentTransaction.commit();
-//    }
+//  }
 
   public void openScanner() {
     Fragment qcr = new QcReaderFragment();
@@ -508,7 +416,6 @@ public class EventsActivity extends AppCompatActivity implements EventsFragment.
 
   @Override
   public void onListFragmentInteraction(MyEvent item) {
-//    Toast.makeText(this, "ovde ici na detalje", Toast.LENGTH_SHORT).show();
     goToEventDetailsActivity(item.getId());
   }
 

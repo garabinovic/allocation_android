@@ -61,6 +61,7 @@
                 >
 
                 <ImageButton
+                    android:id="@+id/previous"
                     android:layout_width="27sp"
                     android:layout_height="27sp"
                     android:layout_gravity="center_vertical"
@@ -70,6 +71,7 @@
 
 
                 <TextView
+                    android:id="@+id/dateString"
                     android:layout_width="110dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -84,6 +86,7 @@
                   />
 
                 <ImageButton
+                    android:id="@+id/next"
                     android:layout_width="27sp"
                     android:layout_height="27sp"
                     android:layout_gravity="center_vertical"

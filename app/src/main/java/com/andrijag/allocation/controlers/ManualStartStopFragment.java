@@ -7,6 +7,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,7 +36,7 @@ public class ManualStartStopFragment extends Fragment {
   private static final String EVENT_ID = "event_id";
 
   EditText mEditDescription;
-  Button mSubmit;
+  Button mSent;
   Boolean mIsStart;
   String mEventId;
   String mDescription;
@@ -64,8 +67,10 @@ public class ManualStartStopFragment extends Fragment {
                            Bundle savedInstanceState) {
     View view = inflater.inflate(R.layout.fragment_manual_start_stop, container, false);
     mEditDescription = view.findViewById(R.id.description_edit_field);
-    mSubmit = view.findViewById(R.id.submit_btn);
-    mSubmit.setOnClickListener(new View.OnClickListener() {
+    mEditDescription.addTextChangedListener(mTextWatcher);
+    mSent = view.findViewById(R.id.submit_btn);
+    mSent.setEnabled(false);
+    mSent.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
         mDescription = mEditDescription.getText().toString();
@@ -145,12 +150,36 @@ public class ManualStartStopFragment extends Fragment {
     fragmentTransaction.commit();
   }
 
-//  public void goToEventsActivity() {
-//    Intent intent = new Intent(getContext(), EventsActivity.class);
-//    startActivity(intent);
-//    getActivity().finish();
-//
-//  }
+
+  private void checkValidation() {
+    // TODO Auto-generated method stub
+    if ((TextUtils.isEmpty(mEditDescription.getText())))
+      mSent.setEnabled(false);
+    else
+      mSent.setEnabled(true);
+
+  }
+
+  TextWatcher mTextWatcher = new TextWatcher() {
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before,
+                              int count) {
+      // TODO Auto-generated method stub
+      checkValidation();
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count,
+                                  int after) {
+      // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+      // TODO Auto-generated method stub
+    }
+  };
 
 
 
